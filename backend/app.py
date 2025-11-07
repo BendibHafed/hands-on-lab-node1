@@ -3,6 +3,8 @@
 ################################################################
 
 import eventlet
+eventlet.monkey_patch()
+
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
 import paho.mqtt.client as mqtt
@@ -12,8 +14,6 @@ from models import db, FirstNodeState # Import model + db
 import json
 import time
 import os
-
-eventlet.monkey_patch()
 
 app = Flask(__name__)
 CORS(app)
@@ -70,7 +70,7 @@ LED1_TOPIC = "home/node1/led1"
 LED2_TOPIC = "home/node1/led2"
 
 # ------------  MQTT Callbacks -------------
-def on_connect(client, userdata, flags, rc):
+def on_connect(client, userdata, flags, rc, properties):
     with app.app_context():
         print(f"MQTT connected, rc={rc}")
         client.subscribe([(PIR_TOPIC, 0)])
@@ -102,7 +102,7 @@ def on_message(client, userdata, message):
             }
         )
 # MQTT Client Setup
-mqtt_client = mqtt.Client()
+mqtt_client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
 mqtt_client.username_pw_set(MQTT_USER, MQTT_PASS)
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message

@@ -2,4 +2,4 @@
 dist/
 venv/
 node_modules/
-ecrets
+secrets
