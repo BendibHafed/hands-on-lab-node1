@@ -3,3 +3,5 @@ dist/
 venv/
 node_modules/
 secrets
+__pycache__/
+*.pyc
